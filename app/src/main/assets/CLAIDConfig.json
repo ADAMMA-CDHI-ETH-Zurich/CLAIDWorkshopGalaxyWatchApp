@@ -1,0 +1,103 @@
+{
+  "hosts": [
+    {
+      "hostname": "galaxy_watch_host",
+      "type": "android",
+      "is_server": false,
+      "connect_to": "test_server",
+      "modules": [
+        {
+          "type": "GalaxyWatchCollector",
+          "id": "GalaxyWatchCollector",
+          "input_channels": [],
+          "output_channels": ["AccelerationData", "HeartRateData"],
+          "properties": {
+            "enableAccelerometer" : "true",
+            "enableHeartRate" : "true",
+            "accelerometerChannel" : "AccelerationData",
+            "heartRateChannel" : "HeartRateData"
+          }
+        },
+        {
+          "type": "DataSaverModule",
+          "id": "AccelerationSaverModule",
+          "input_channels": ["AccelerationData"],
+          "output_channels": [],
+          "properties": {
+            "what": "AccelerationData",
+            "storagePath": "/storage/emulated/0/Android/media/org.c4dhi.adamma.claid_workshop_galaxy_watch/files",
+            "fileNameFormat": "%d.%m.%y/acceleration_data_%d.%m.%y_%H.binary",
+            "fileType": "binary"
+
+          }
+        },
+        {
+          "type": "DataSaverModule",
+          "id": "HeartRateSaverModule",
+          "input_channels": ["HeartRateData"],
+          "output_channels": [],
+          "properties": {
+            "what": "HeartRateData",
+            "storagePath": "/storage/emulated/0/Android/media/org.c4dhi.adamma.claid_workshop_galaxy_watch/files",
+            "fileNameFormat": "%d.%m.%y/heart_rate_data_%d.%m.%y_%H.binary",
+            "fileType": "binary"
+
+          }
+        },
+        {
+          "type": "BatteryCollector",
+          "id": "BatteryCollector",
+          "input_channels": [],
+          "output_channels": ["BatteryData"],
+          "properties": {
+            "monitoringIntervall" : "60000"
+          }
+        },
+        {
+          "type": "DataSaverModule",
+          "id": "BatteryDataSaverModule",
+          "input_channels": ["BatteryData"],
+          "output_channels": [],
+          "properties": {
+            "what": "BatteryData",
+            "storagePath": "/storage/emulated/0/Android/media/org.c4dhi.adamma.claid_workshop_galaxy_watch/files",
+            "fileNameFormat": "%d.%m.%y/battery_data_%d.%m.%y_%H.binary",
+            "fileType": "binary"
+
+          }
+        },
+        {
+          "type": "DataSyncModule",
+          "id": "DataSyncModule",
+          "input_channels": ["FileSyncer/RequestedFileList", "FileSyncer/ReceivedFilesAcknowledgement"],
+          "output_channels": ["FileSyncer/CompleteFileList", "FileSyncer/DataFiles"],
+          "properties": {
+            "filePath": "/storage/emulated/0/Android/media/org.c4dhi.adamma.claid_workshop_galaxy_watch/files",
+            "syncingPeriodInMs": "1800000",
+            "deleteFileAfterSync": "false"
+          }
+        }
+
+      ]
+    },
+    {
+      "hostname": "test_server",
+      "type": "linux",
+      "is_server": true,
+      "hostServerAddress": "adamma.ethz.ch:1337",
+      "modules": [
+        {
+          "type": "DataReceiverModule",
+          "id": "DataReceiverModule",
+          "input_channels": ["FileSyncer/CompleteFileList", "FileSyncer/DataFiles"],
+          "output_channels": ["FileSyncer/RequestedFileList", "FileSyncer/ReceivedFilesAcknowledgement"],
+          "properties": {
+            "filePath": "/tmp/CLAIDTest/SyncedData"
+          }
+        }
+
+      ]
+    }
+
+  ]
+}
