@@ -6,6 +6,7 @@ import adamma.c4dhi.claid_platform_impl.CLAID;
 import adamma.c4dhi.claid_platform_impl.PersistentModuleFactory;
 import adamma.c4dhi.claid_android.collectors.battery.BatteryCollector;
 
+
 public class MyApplication extends Application
 {
     static PersistentModuleFactory moduleFactory;
@@ -14,8 +15,6 @@ public class MyApplication extends Application
     {
         super.onCreate();
         moduleFactory = CLAID.getPersistentModuleFactory(this);
-        moduleFactory.registerModule(GalaxyWatchCollector.class);
-        moduleFactory.registerModule(BatteryCollector.class);
 
     }
 }
