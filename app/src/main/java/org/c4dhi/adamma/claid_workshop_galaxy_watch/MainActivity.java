@@ -41,6 +41,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import adamma.c4dhi.claid.DataPackage;
 import adamma.c4dhi.claid.Logger.Logger;
 import adamma.c4dhi.claid.Module.ModuleFactory;
 import adamma.c4dhi.claid_android.Configuration.CLAIDSpecialPermissionsConfig;
