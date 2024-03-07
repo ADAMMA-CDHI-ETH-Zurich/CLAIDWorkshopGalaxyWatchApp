@@ -13,6 +13,10 @@
         android:name="android.permission.ACCESS_WIFI_STATE"/>
     <queries>
         <package android:name="com.google.android.wearable.healthservices" />
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+
     </queries>
 
 
