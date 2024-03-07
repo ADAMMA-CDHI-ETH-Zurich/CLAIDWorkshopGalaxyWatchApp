@@ -17,7 +17,7 @@ public class TextToSpeechModule extends Module implements TextToSpeech.OnInitLis
     private TextToSpeech textToSpeech;
     public static void annotateModule(ModuleAnnotator annotator)
     {
-        annotator.setModuleCategory("DataCollection");
+        annotator.setModuleCategory("UserFeedback");
         annotator.setModuleDescription("The GyroscopeCollector allows to record gyrpscpüe data using the devices built-in gyroscope of the device."
                 + "The sampling frequency can be freely configured, however is subject to the limitations of the device (i.e., built-in sensor speicifications)."
                 + "The GyroscopeCollector features two recording modes: \"Batched\" and \"Streaming\"\n");
