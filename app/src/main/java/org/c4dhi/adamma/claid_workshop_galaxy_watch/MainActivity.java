@@ -6,6 +6,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -56,6 +57,7 @@ public class MainActivity extends Activity {
     Button startButton;
     Button resetButton;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +102,8 @@ public class MainActivity extends Activity {
 
         ActivityCompat.requestPermissions((Activity) this,
                 new String[]{Manifest.permission.BODY_SENSORS,
-                        Manifest.permission.ACTIVITY_RECOGNITION
+                        Manifest.permission.ACTIVITY_RECOGNITION,
+                        Manifest.permission.POST_NOTIFICATIONS,
 
                 },1337);
 
@@ -294,7 +297,7 @@ public class MainActivity extends Activity {
         boolean allPermissionsSufficient = true;
 
         if(!checkPermission(Manifest.permission.BODY_SENSORS) ||
-                !checkPermission(Manifest.permission.ACTIVITY_RECOGNITION))
+                !checkPermission(Manifest.permission.ACTIVITY_RECOGNITION) || !checkPermission(Manifest.permission.POST_NOTIFICATIONS))
         {
             requestGrantAllPermissions();
         }
@@ -378,6 +381,11 @@ public class MainActivity extends Activity {
 
     private void onStartButtonClicked()
     {
+        if(claidStarted)
+        {
+            showRestartDialog();
+            return;
+        }
         String configContent = readFileToString(getApplicationContext(), getConfigPath());
         configContent = configContent.replace("$(workshop_smartwatch_ip_to_replace)", getCurrentIp() + ":1337");
 
@@ -386,7 +394,8 @@ public class MainActivity extends Activity {
 
         resetButton.setVisibility(View.INVISIBLE);
         resetButton.setEnabled(false);
-        startButton.setEnabled(false);
+//        startButton.setEnabled(false);
+        startButton.setText("Stop");
         mTextView.setText("CLAID is running!\nAddress of this device: " + getCurrentIp() + ":1337");
     }
 
@@ -420,6 +429,29 @@ public class MainActivity extends Activity {
     private String getLaunchConfigPath()
     {
         return CLAID.getMediaDirPath(getApplicationContext()) + "/current_config_launch.json";
+    }
+
+    void showRestartDialog()
+    {
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
+        builder1.setMessage("Stop CLAID and restart application?");
+        builder1.setCancelable(true);
+        builder1.setPositiveButton(
+                "Ok",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        PackageManager packageManager = getPackageManager();
+                        Intent intent = packageManager.getLaunchIntentForPackage(getPackageName());
+                        ComponentName componentName = intent.getComponent();
+                        Intent mainIntent = Intent.makeRestartActivityTask(componentName);
+                        startActivity(mainIntent);
+                        Runtime.getRuntime().exit(0);
+
+                    }
+                });
+
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
     }
 
     void deleteCurrentConfigIfExists()
