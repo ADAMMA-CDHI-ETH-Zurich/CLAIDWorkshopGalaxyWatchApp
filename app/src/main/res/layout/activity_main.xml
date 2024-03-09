@@ -37,6 +37,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Reset" />
+
+            <TextView
+                android:id="@+id/pythonRuntimeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView" />
+
+            <TextView
+                android:id="@+id/additionalText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView" />
         </LinearLayout>
 
     </FrameLayout>

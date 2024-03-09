@@ -12,7 +12,7 @@ chaquopy {
             install("grpcio")
             install("protobuf==4.24.0")
             install("tensorflow==2.1.0")
-            install("claid==0.0.6.1")
+            install("claid==0.0.6.2")
         }
 
     }

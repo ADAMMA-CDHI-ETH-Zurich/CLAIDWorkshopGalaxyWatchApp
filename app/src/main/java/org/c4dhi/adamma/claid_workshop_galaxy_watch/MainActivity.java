@@ -43,6 +43,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import adamma.c4dhi.claid.DataPackage;
 import adamma.c4dhi.claid.Logger.Logger;
@@ -57,6 +58,8 @@ public class MainActivity extends Activity {
     boolean permissionRequestDone = false;
     boolean claidStarted = false;
     private TextView mTextView;
+    private TextView pythonRuntimeText;
+    private TextView additionalText;
 
     Button startButton;
     Button resetButton;
@@ -70,6 +73,11 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         mTextView = findViewById(R.id.text);
+        pythonRuntimeText = findViewById(R.id.pythonRuntimeText);
+        additionalText = findViewById(R.id.additionalText);
+
+        pythonRuntimeText.setText("");
+        additionalText.setText("");
 
         startButton = findViewById(R.id.startButton);
         resetButton = findViewById(R.id.resetButton);
@@ -373,8 +381,25 @@ public class MainActivity extends Activity {
             throw new RuntimeException(e);
         }
         CLAID.enableDesignerMode();
+
+        String payloadDataPath = CLAID.getMediaDirPath(getApplicationContext()) + "/injections";
+
+        // For module injections
+        createModuleInjectionsFolder(payloadDataPath);
+        CLAID.setPayloadDataPath(payloadDataPath);
         this.pythonThread = new Thread(() -> startPyCLAID());
         pythonThread.start();
+    }
+
+    void createModuleInjectionsFolder(String path)
+    {
+
+        File directory = new File(path);
+        if (! directory.exists()){
+            directory.mkdir();
+            // If you require it to make the entire directory path including parents,
+            // use directory.mkdirs(); here instead.
+        }
     }
 
     void startPyCLAID()
@@ -388,9 +413,15 @@ public class MainActivity extends Activity {
 
             Python py = Python.getInstance();
             System.out.println("Starting py CLAID from Java 3");
+            runOnUiThread(() ->
+                    mTextView.setText("CLAID is running!\nAddress of this device: " + getCurrentIp() + ":1337\non-device python ready"));
+
+            System.out.println("SettingText");
+         //   runOnUiThread(() -> pythonRuntimeText.setText("python ready"));
 
             py.getModule("main").callAttr("attach");
             System.out.println("Starting py CLAID from Java 4");
+
 
 
         }
@@ -429,6 +460,9 @@ public class MainActivity extends Activity {
     {
         deleteCurrentConfigIfExists();
         copyDefaultConfig();
+        String payloadDataPath = CLAID.getMediaDirPath(getApplicationContext()) + "/injections";
+        deleteDirectoryRecursively(new File(payloadDataPath));
+        createModuleInjectionsFolder(payloadDataPath);
     }
 
     private void copyDefaultConfig()
@@ -437,6 +471,17 @@ public class MainActivity extends Activity {
         System.out.println("Config content "+ configData);
 
         writeStringToFile(getConfigPath(), configData);
+    }
+
+    boolean deleteDirectoryRecursively(File directoryToBeDeleted) {
+        File[] allContents = directoryToBeDeleted.listFiles();
+        if (allContents != null) {
+            for (File file : allContents)
+            {
+                deleteDirectoryRecursively(file);
+            }
+        }
+        return directoryToBeDeleted.delete();
     }
 
     private String getCurrentIp()
