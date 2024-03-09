@@ -26,6 +26,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.IntentCompat;
 
+import com.chaquo.python.Python;
+import com.chaquo.python.android.AndroidPlatform;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
@@ -58,6 +61,7 @@ public class MainActivity extends Activity {
     Button startButton;
     Button resetButton;
 
+    Thread pythonThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -369,6 +373,27 @@ public class MainActivity extends Activity {
             throw new RuntimeException(e);
         }
         CLAID.enableDesignerMode();
+        this.pythonThread = new Thread(() -> startPyCLAID());
+        pythonThread.start();
+    }
+
+    void startPyCLAID()
+    {
+        System.out.println("Starting py CLAID from Java");
+        if (! Python.isStarted()) {
+            System.out.println("Starting py CLAID from Java 1");
+
+            Python.start(new AndroidPlatform(getApplicationContext()));
+            System.out.println("Starting py CLAID from Java 2");
+
+            Python py = Python.getInstance();
+            System.out.println("Starting py CLAID from Java 3");
+
+            py.getModule("main").callAttr("attach");
+            System.out.println("Starting py CLAID from Java 4");
+
+
+        }
     }
 
     void copyDefaultConfigIfNoConfigExists()
