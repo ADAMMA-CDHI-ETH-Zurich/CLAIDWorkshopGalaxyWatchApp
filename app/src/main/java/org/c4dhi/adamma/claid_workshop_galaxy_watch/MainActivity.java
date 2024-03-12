@@ -117,6 +117,8 @@ public class MainActivity extends Activity {
                 new String[]{Manifest.permission.BODY_SENSORS,
                         Manifest.permission.ACTIVITY_RECOGNITION,
                         Manifest.permission.POST_NOTIFICATIONS,
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
 
                 },1337);
 
@@ -310,7 +312,8 @@ public class MainActivity extends Activity {
         boolean allPermissionsSufficient = true;
 
         if(!checkPermission(Manifest.permission.BODY_SENSORS) ||
-                !checkPermission(Manifest.permission.ACTIVITY_RECOGNITION) || !checkPermission(Manifest.permission.POST_NOTIFICATIONS))
+                !checkPermission(Manifest.permission.ACTIVITY_RECOGNITION) || !checkPermission(Manifest.permission.POST_NOTIFICATIONS)
+                || !checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) || !checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE))
         {
             requestGrantAllPermissions();
         }
