@@ -86,7 +86,7 @@ public class MainActivity extends Activity {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onStartButtonClicked();
+                onStartStopButtonClicked();
             }
         });
 
@@ -356,8 +356,8 @@ public class MainActivity extends Activity {
         config.MANAGE_ALL_STORAGE = true;
         config.DISABLE_BATTERY_OPTIMIZATIONS = false;
 
-        CLAID.onStarted(() -> CLAID.enableDesignerMode());
-        /*
+        CLAID.onStarted(() -> onCLAIDStarted());
+
         CLAID.startInPersistentService(this,
                 getLaunchConfigPath(),
                 "Smartwatch",
@@ -365,14 +365,14 @@ public class MainActivity extends Activity {
                 "galaxywatch5",
                 MyApplication.moduleFactory,
                 config,
-                CLAIDPersistanceConfig.minimumPersistance());*/
-        CLAID.start(this,
+                CLAIDPersistanceConfig.minimumPersistance());
+        /*CLAID.start(this,
                 getLaunchConfigPath(),
                 "Smartwatch",
                 "galaxy_watch_user",
                 "galaxy_watch_5",
                 MyApplication.moduleFactory,
-                config);
+                config);*/
         CLAID.enableKeepAppAwake(getApplicationContext());
 
         try {
@@ -386,9 +386,16 @@ public class MainActivity extends Activity {
 
         // For module injections
         createModuleInjectionsFolder(payloadDataPath);
-        CLAID.setPayloadDataPath(payloadDataPath);
         this.pythonThread = new Thread(() -> startPyCLAID());
         pythonThread.start();
+    }
+
+    void onCLAIDStarted()
+    {
+        String payloadDataPath = CLAID.getMediaDirPath(getApplicationContext()) + "/injections";
+
+        CLAID.setPayloadDataPath(payloadDataPath);
+        CLAID.enableDesignerMode();
     }
 
     void createModuleInjectionsFolder(String path)
@@ -436,11 +443,11 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void onStartButtonClicked()
+    private void onStartStopButtonClicked()
     {
         if(claidStarted)
         {
-            showRestartDialog();
+            showStopDialog();
             return;
         }
         String configContent = readFileToString(getApplicationContext(), getConfigPath());
@@ -502,7 +509,7 @@ public class MainActivity extends Activity {
         return CLAID.getMediaDirPath(getApplicationContext()) + "/current_config_launch.json";
     }
 
-    void showRestartDialog()
+    void showStopDialog()
     {
         AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
         builder1.setMessage("Stop CLAID and restart application?");
@@ -511,13 +518,20 @@ public class MainActivity extends Activity {
                 "Ok",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        CLAID.shutdown();
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
                         PackageManager packageManager = getPackageManager();
                         Intent intent = packageManager.getLaunchIntentForPackage(getPackageName());
                         ComponentName componentName = intent.getComponent();
                         Intent mainIntent = Intent.makeRestartActivityTask(componentName);
                         startActivity(mainIntent);
                         Runtime.getRuntime().exit(0);
-
+                        mTextView.setText("Please select: ");
+                        startButton.setText("Start");
                     }
                 });
 
