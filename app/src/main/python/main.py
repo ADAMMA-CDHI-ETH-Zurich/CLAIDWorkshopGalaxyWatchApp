@@ -5,6 +5,7 @@ os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
 from claid import CLAID
 
 from claid.module.module_factory import ModuleFactory
+from claid.logger.logger import Logger
 global claid
 import sys
 import os
@@ -14,13 +15,12 @@ current_file_path = os.path.abspath(__file__)
 current_directory = os.path.dirname(current_file_path)
 sys.path.append(current_directory)
 
-injections_path = "/sdcard/Android/media/org.c4dhi.adamma.claid_workshop_galaxy_watch/injections"
 
-def attach():
+def attach(socket_path, injections_path):
     global claid
-    claid=CLAID()
+    Logger.log_warning("Python runtime paths: {}, {}".format(socket_path, injections_path))
+    claid = CLAID()
     module_factory = ModuleFactory()
     module_factory.register_all_modules_found_in_path(injections_path)
-    socket_path = "unix:///data/user/0/org.c4dhi.adamma.claid_workshop_galaxy_watch/files/claid_local.grpc"
     claid.attach_python_runtime(socket_path, module_factory)
     claid.process_runnables_blocking()

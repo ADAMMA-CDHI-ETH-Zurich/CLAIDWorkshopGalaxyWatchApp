@@ -429,7 +429,16 @@ public class MainActivity extends Activity {
             System.out.println("SettingText");
          //   runOnUiThread(() -> pythonRuntimeText.setText("python ready"));
 
-            py.getModule("main").callAttr("attach");
+            try
+            {
+                Logger.logWarning("Attaching PythonRuntime, socket path: " + CLAID.getSocketPath() + " payload path: " +
+                        CLAID.getPayloadDataPath());
+                py.getModule("main").callAttr("attach", CLAID.getSocketPath(), CLAID.getPayloadDataPath());
+            }
+            catch(Exception e)
+            {
+                Logger.logError(e.getMessage() + " " + e.getCause());
+            }
             System.out.println("Starting py CLAID from Java 4");
 
 

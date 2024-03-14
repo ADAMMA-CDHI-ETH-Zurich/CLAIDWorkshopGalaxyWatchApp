@@ -5,6 +5,7 @@
       "type": "android",
       "isServer": true,
       "hostServerAddress": "$(workshop_smartwatch_ip_to_replace)",
+      "min_log_severity_level": "INFO",
       "modules": [
       ]
     },
