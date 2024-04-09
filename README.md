@@ -6,7 +6,7 @@
   <img alt="CDHI" src="assets/cdhi_logo.png" width="45%">
 </p>
 
-Check https://claid.ethz.ch/workshops/amld/workshop_app/ for more details.
+This is the source code for the App which we used during our workshop at AMLD 2024. Check out https://claid.ethz.ch/workshops/amld/workshop_app/ for more details.
 
 ## Contributors
 Patrick Langer, ETH Zurich, 2024  
