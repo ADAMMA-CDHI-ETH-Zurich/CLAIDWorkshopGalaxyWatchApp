@@ -382,12 +382,11 @@ public class MainActivity extends Activity {
 
         CLAID.onStarted(() -> onCLAIDStarted());
 
-        CLAID.startInPersistentService(this,
+        CLAID.startInBackground(this,
                 getLaunchConfigPath(),
                 "Smartwatch",
                 "galaxy_watch_user",
                 "galaxywatch5",
-                MyApplication.moduleFactory,
                 config,
                 CLAIDPersistanceConfig.minimumPersistance());
         /*CLAID.start(this,
@@ -424,7 +423,6 @@ public class MainActivity extends Activity {
 
     void createModuleInjectionsFolder(String path)
     {
-
         File directory = new File(path);
         if (! directory.exists()){
             directory.mkdir();
